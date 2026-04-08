@@ -47,6 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Delivery.cs" />
+    <Compile Include="DeliveryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="DeliveryManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
