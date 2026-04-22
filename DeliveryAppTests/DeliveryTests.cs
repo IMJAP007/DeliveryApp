@@ -57,5 +57,14 @@ namespace DeliveryAppTests
             Assert.AreEqual(expected_date, actual_date);
             Assert.AreEqual(expected_status, actual_status);
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Null_Status_Throws_Argument_Exception()
+        {
+            Delivery delivery = new Delivery("Андрей", "Бармалеева улица", DateTime.Now);
+
+            delivery.Status = (DeliveryStatus)Enum.Parse(typeof(DeliveryStatus), "");
+        }
     }
 }
