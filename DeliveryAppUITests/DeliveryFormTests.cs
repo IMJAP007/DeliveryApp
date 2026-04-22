@@ -34,7 +34,7 @@ namespace DeliveryAppUITests
         {
             var customerName = window.FindFirstByXPath("/Edit[1]")?.AsTextBox();
             var address = window.FindFirstByXPath("/Edit[2]")?.AsTextBox();
-            var status = window.FindFirstByXPath("/Combobox")?.AsComboBox();
+            var status = window.FindFirstByXPath("/ComboBox")?.AsComboBox();
 
             var addButton = window.FindFirstByXPath("/Button[1]")?.AsButton();
             var deleteButton = window.FindFirstByXPath("/Button[2]")?.AsButton();
@@ -54,7 +54,7 @@ namespace DeliveryAppUITests
         {
             var customerName = window.FindFirstByXPath("/Edit[1]")?.AsTextBox();
             var address = window.FindFirstByXPath("/Edit[2]")?.AsTextBox();
-            var status = window.FindFirstByXPath("/Combobox")?.AsComboBox();
+            var status = window.FindFirstByXPath("/ComboBox")?.AsComboBox();
 
             var addButton = window.FindFirstByXPath("/Button[1]")?.AsButton();
             var deleteButton = window.FindFirstByXPath("/Button[2]")?.AsButton();
@@ -77,7 +77,7 @@ namespace DeliveryAppUITests
         {
             var customerName = window.FindFirstByXPath("/Edit[1]")?.AsTextBox();
             var address = window.FindFirstByXPath("/Edit[2]")?.AsTextBox();
-            var status = window.FindFirstByXPath("/Combobox")?.AsComboBox();
+            var status = window.FindFirstByXPath("/ComboBox")?.AsComboBox();
 
             var addButton = window.FindFirstByXPath("/Button[1]")?.AsButton();
             var deleteButton = window.FindFirstByXPath("/Button[2]")?.AsButton();
@@ -100,7 +100,7 @@ namespace DeliveryAppUITests
         {
             var customerName = window.FindFirstByXPath("/Edit[1]")?.AsTextBox();
             var address = window.FindFirstByXPath("/Edit[2]")?.AsTextBox();
-            var status = window.FindFirstByXPath("/Combobox")?.AsComboBox();
+            var status = window.FindFirstByXPath("/ComboBox")?.AsComboBox();
 
             var addButton = window.FindFirstByXPath("/Button[1]")?.AsButton();
             var deleteButton = window.FindFirstByXPath("/Button[2]")?.AsButton();
@@ -121,7 +121,7 @@ namespace DeliveryAppUITests
         {
             var customerName = window.FindFirstByXPath("/Edit[1]")?.AsTextBox();
             var address = window.FindFirstByXPath("/Edit[2]")?.AsTextBox();
-            var status = window.FindFirstByXPath("/Combobox")?.AsComboBox();
+            var status = window.FindFirstByXPath("/ComboBox")?.AsComboBox();
 
             var addButton = window.FindFirstByXPath("/Button[1]")?.AsButton();
             var deleteButton = window.FindFirstByXPath("/Button[2]")?.AsButton();
@@ -143,7 +143,7 @@ namespace DeliveryAppUITests
         {
             var customerName = window.FindFirstByXPath("/Edit[1]")?.AsTextBox();
             var address = window.FindFirstByXPath("/Edit[2]")?.AsTextBox();
-            var status = window.FindFirstByXPath("/Combobox")?.AsComboBox();
+            var status = window.FindFirstByXPath("/ComboBox")?.AsComboBox();
 
             var addButton = window.FindFirstByXPath("/Button[1]")?.AsButton();
             var deleteButton = window.FindFirstByXPath("/Button[2]")?.AsButton();
@@ -167,7 +167,53 @@ namespace DeliveryAppUITests
             Assert.IsTrue(list?.Items.Any(item => item.Text.Contains("Николай") && item.Text.Contains("улица Рубинштейна")));
         }
 
+        [TestMethod]
+        public void UpdateStatus_NoSelection_ShowsError()
+        {
+            var customerName = window.FindFirstByXPath("/Edit[1]")?.AsTextBox();
+            var address = window.FindFirstByXPath("/Edit[2]")?.AsTextBox();
+            var status = window.FindFirstByXPath("/ComboBox")?.AsComboBox();
 
+            var addButton = window.FindFirstByXPath("/Button[1]")?.AsButton();
+            var deleteButton = window.FindFirstByXPath("/Button[2]")?.AsButton();
+            var updateButton = window.FindFirstByXPath("/Button[3]")?.AsButton();
+
+            var list = window.FindFirstByXPath("/List")?.AsListBox();
+
+            updateButton?.Click();
+
+            var errow_window = window.FindFirstByXPath("/Window")?.AsWindow();
+
+            Assert.IsTrue(!errow_window?.Equals(null));
+
+            errow_window.Close();
+        }
+
+        [TestMethod]
+        public void UpdateStatus_ValidSelection_UpdatesStatus()
+        {
+            var customerName = window.FindFirstByXPath("/Edit[1]")?.AsTextBox();
+            var address = window.FindFirstByXPath("/Edit[2]")?.AsTextBox();
+            var status = window.FindFirstByXPath("/ComboBox")?.AsComboBox();
+
+            var addButton = window.FindFirstByXPath("/Button[1]")?.AsButton();
+            var deleteButton = window.FindFirstByXPath("/Button[2]")?.AsButton();
+            var updateButton = window.FindFirstByXPath("/Button[3]")?.AsButton();
+
+            var list = window.FindFirstByXPath("/List")?.AsListBox();
+
+            customerName?.Enter("Андрей");
+            address?.Enter("Бармалеева улица");
+            addButton?.Click();
+
+            list.Select(0);
+            status?.Expand();
+            status?.Select(1);
+            status?.Collapse();
+            updateButton?.Click();
+
+            Assert.IsTrue(list?.Items.Any(item => item.Text.Contains("Андрей") && item.Text.Contains("Бармалеева улица") && item.Text.Contains("В_пути")));
+        }
 
 
         [TestCleanup]
