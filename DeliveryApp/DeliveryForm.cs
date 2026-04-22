@@ -160,10 +160,9 @@ namespace DeliveryApp
                 customerName && d.Address == address);
                 if (deliveryToUpdate != null)
                 {
-                    DeliveryStatus newStatus = (DeliveryStatus)Enum.Parse(typeof(DeliveryStatus),
-                    statusComboBox.SelectedItem.ToString());
                     try
                     {
+                        DeliveryStatus newStatus = (DeliveryStatus)Enum.Parse(typeof(DeliveryStatus), statusComboBox.SelectedItem?.ToString());
                         deliveryManager.UpdateDeliveryStatus(deliveryToUpdate, newStatus);
                         UpdateDeliveriesList();
                     }
