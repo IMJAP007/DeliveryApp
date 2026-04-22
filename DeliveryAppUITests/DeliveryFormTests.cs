@@ -116,6 +116,59 @@ namespace DeliveryAppUITests
             Assert.AreEqual("", address.Text);
         }
 
+        [TestMethod]
+        public void RemoveDelivery_NoSelection_ShowsError()
+        {
+            var customerName = window.FindFirstByXPath("/Edit[1]")?.AsTextBox();
+            var address = window.FindFirstByXPath("/Edit[2]")?.AsTextBox();
+            var status = window.FindFirstByXPath("/Combobox")?.AsComboBox();
+
+            var addButton = window.FindFirstByXPath("/Button[1]")?.AsButton();
+            var deleteButton = window.FindFirstByXPath("/Button[2]")?.AsButton();
+            var updateButton = window.FindFirstByXPath("/Button[3]")?.AsButton();
+
+            var list = window.FindFirstByXPath("/List")?.AsListBox();
+
+            deleteButton?.Click();
+
+            var errow_window = window.FindFirstByXPath("/Window")?.AsWindow();
+
+            Assert.IsTrue(!errow_window?.Equals(null));
+
+            errow_window.Close();
+        }
+
+        [TestMethod]
+        public void RemoveDelivery_ValidSelection_RemovesFromList()
+        {
+            var customerName = window.FindFirstByXPath("/Edit[1]")?.AsTextBox();
+            var address = window.FindFirstByXPath("/Edit[2]")?.AsTextBox();
+            var status = window.FindFirstByXPath("/Combobox")?.AsComboBox();
+
+            var addButton = window.FindFirstByXPath("/Button[1]")?.AsButton();
+            var deleteButton = window.FindFirstByXPath("/Button[2]")?.AsButton();
+            var updateButton = window.FindFirstByXPath("/Button[3]")?.AsButton();
+
+            var list = window.FindFirstByXPath("/List")?.AsListBox();
+
+            customerName?.Enter("Андрей");
+            address?.Enter("Бармалеева улица");
+            addButton?.Click();
+
+            customerName?.Enter("Николай");
+            address?.Enter("улица Рубинштейна");
+            addButton?.Click();
+
+            list?.Select(0);
+
+            deleteButton?.Click();
+
+            Assert.AreEqual(1, list.Items.Length);
+            Assert.IsTrue(list?.Items.Any(item => item.Text.Contains("Николай") && item.Text.Contains("улица Рубинштейна")));
+        }
+
+
+
 
         [TestCleanup]
         public void Cleanup()
