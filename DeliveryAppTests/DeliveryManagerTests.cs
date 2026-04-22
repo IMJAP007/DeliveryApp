@@ -171,5 +171,45 @@ namespace DeliveryAppTests
                 Assert.IsTrue(lines.Contains($"Андрей|Бармалеева улица|{DateTime.Now.ToString("yyyy-MM-dd")}|1"));
             }
         }
+
+        [TestMethod]
+        public void LoadDeliveries_FileExists_LoadsCorrectly()
+        {
+            using (StreamWriter sw = new StreamWriter("deliveries.txt"))
+            {
+                sw.WriteLine($"Андрей|Бармалеева улица|{DateTime.Now.ToString("yyyy-MM-dd")}|0");
+            }
+
+            DeliveryManager dm1 = new DeliveryManager();
+
+            Assert.AreEqual(1, dm1.Deliveries.Count);
+            Assert.AreEqual("Андрей", dm1.Deliveries[0].CustomerName);
+            Assert.AreEqual("Бармалеева улица", dm1.Deliveries[0].Address);
+            Assert.AreEqual(DateTime.Now.Date, dm1.Deliveries[0].DeliveryDate);
+            Assert.AreEqual(DeliveryStatus.Новый, dm1.Deliveries[0].Status);
+        }
+
+        [TestMethod]
+        public void LoadDeliveries_FileDoesNotExist_NoException()
+        {
+            DeliveryManager dm1 = new DeliveryManager();
+
+            Assert.AreEqual(0, dm1.Deliveries.Count);
+        }
+
+        [TestMethod]
+        public void LoadDeliveries_CorruptedLine_SkipsLine()
+        {
+            using (StreamWriter sw = new StreamWriter("deliveries.txt"))
+            {
+                sw.WriteLine($"Андрей|Бармалеева улица|0");
+                sw.WriteLine($"Николай|улица Рубинштейна||{DateTime.Now.ToString("yyyy-MM-dd")}|0");
+                sw.WriteLine($"Артемий|улица Шишкина|{DateTime.Now.ToString("yyyy-MM-dd")}|0");
+            }
+
+            DeliveryManager dm1 = new DeliveryManager();
+
+            Assert.AreEqual(1, dm1.Deliveries.Count);
+        }
     }
 }
