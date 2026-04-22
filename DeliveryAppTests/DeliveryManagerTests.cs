@@ -12,9 +12,13 @@ namespace DeliveryAppTests
     [TestClass]
     public class DeliveryManagerTests
     {
+        DeliveryManager dm;
+
         [TestInitialize]
         public void SetUp()
         {
+            dm = new DeliveryManager();
+
             if (File.Exists("deliveries.txt"))
             {
                 File.Delete("deliveries.txt");
@@ -24,7 +28,7 @@ namespace DeliveryAppTests
         [TestMethod]
         public void AddDelivery_ValidDelivery_Adds_to_List()
         {
-            DeliveryManager dm = new DeliveryManager();
+            dm.Deliveries.Clear();
 
             Delivery delivery = new Delivery("Андрей", "Бармалеева улица", DateTime.Now);
 
@@ -37,7 +41,7 @@ namespace DeliveryAppTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void AddDelivery_Null_Throws_Argument_Null_Exception()
         {
-            DeliveryManager dm = new DeliveryManager();
+            dm.Deliveries.Clear();
 
             dm.AddDelivery(null);
         }
@@ -45,7 +49,7 @@ namespace DeliveryAppTests
         [TestMethod]
         public void AddDelivery_SavesToFile()
         {
-            DeliveryManager dm = new DeliveryManager();
+            dm.Deliveries.Clear();
 
             Delivery delivery1 = new Delivery("Андрей", "Бармалеева улица", DateTime.Now);
             Delivery delivery2 = new Delivery("Николай", "улица Рубинштейна", DateTime.Now);
@@ -61,6 +65,71 @@ namespace DeliveryAppTests
                 
                 Assert.IsTrue(lines.Contains($"Андрей|Бармалеева улица|{DateTime.Now.ToString("yyyy-MM-dd")}|0"));
                 Assert.IsTrue(lines.Contains($"Николай|улица Рубинштейна|{DateTime.Now.ToString("yyyy-MM-dd")}|0"));
+            }
+        }
+
+        [TestMethod]
+        public void RemoveDelivery_ExistingDelivery_RemovesFromList()
+        {
+            dm.Deliveries.Clear();
+
+            Delivery delivery1 = new Delivery("Андрей", "Бармалеева улица", DateTime.Now);
+            Delivery delivery2 = new Delivery("Николай", "улица Рубинштейна", DateTime.Now);
+
+            dm.AddDelivery(delivery1);
+            dm.AddDelivery(delivery2);
+            dm.RemoveDelivery(delivery1);
+
+            Assert.IsTrue(!dm.Deliveries.Contains(delivery1));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void RemoveDelivery_NullDelivery_ThrowsArgumentNullException()
+        {
+            dm.Deliveries.Clear();
+
+            dm.RemoveDelivery(null);
+        }
+
+        [TestMethod]
+        public void RemoveDelivery_NonExistingDelivery_NoChanges()
+        {
+            dm.Deliveries.Clear();
+
+            Delivery delivery1 = new Delivery("Андрей", "Бармалеева улица", DateTime.Now);
+            Delivery delivery2 = new Delivery("Николай", "улица Рубинштейна", DateTime.Now);
+            Delivery delivery3 = new Delivery("Борис", "улица Шишкина", DateTime.Now);
+
+            dm.AddDelivery(delivery1);
+            dm.AddDelivery(delivery2);
+            dm.RemoveDelivery(delivery3);
+
+            Assert.AreEqual(2, dm.Deliveries.Count);
+            Assert.IsTrue(dm.Deliveries.Contains(delivery1));
+            Assert.IsTrue(dm.Deliveries.Contains(delivery2));
+        }
+
+        [TestMethod]
+        public void RemoveDelivery_SavesToFile()
+        {
+            dm.Deliveries.Clear();
+
+            Delivery delivery1 = new Delivery("Андрей", "Бармалеева улица", DateTime.Now);
+            Delivery delivery2 = new Delivery("Николай", "улица Рубинштейна", DateTime.Now);
+            Delivery delivery3 = new Delivery("Борис", "улица Шишкина", DateTime.Now);
+
+            dm.AddDelivery(delivery1);
+            dm.AddDelivery(delivery2);
+            dm.AddDelivery(delivery3);
+            dm.RemoveDelivery(delivery3);
+
+            if (File.Exists("deliveries.txt"))
+            {
+                var lines = File.ReadLines("deliveries.txt");
+                Assert.IsTrue(lines.Contains($"Андрей|Бармалеева улица|{DateTime.Now.ToString("yyyy-MM-dd")}|0"));
+                Assert.IsTrue(lines.Contains($"Николай|улица Рубинштейна|{DateTime.Now.ToString("yyyy-MM-dd")}|0"));
+                Assert.IsTrue(!lines.Contains($"Борис|улица Шишкина|{DateTime.Now.ToString("yyyy-MM-dd")}|0"));
             }
         }
     }
