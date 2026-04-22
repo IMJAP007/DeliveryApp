@@ -22,5 +22,14 @@ namespace DeliveryAppTests
 
             Assert.IsTrue(dm.Deliveries.Contains(delivery));
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddDelivery_Null_Throws_Argument_Null_Exception()
+        {
+            DeliveryManager dm = new DeliveryManager();
+
+            dm.AddDelivery(null);
+        }
     }
 }
