@@ -25,11 +25,20 @@ namespace DeliveryAppTests
             }
         }
 
-        [TestMethod]
-        public void AddDelivery_ValidDelivery_Adds_to_List()
+        [TestCleanup]
+        public void Cleanup()
         {
             dm.Deliveries.Clear();
 
+            if (File.Exists("deliveries.txt"))
+            {
+                File.Delete("deliveries.txt");
+            }
+        }
+
+        [TestMethod]
+        public void AddDelivery_ValidDelivery_Adds_to_List()
+        {
             Delivery delivery = new Delivery("Андрей", "Бармалеева улица", DateTime.Now);
 
             dm.AddDelivery(delivery);
@@ -41,16 +50,12 @@ namespace DeliveryAppTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void AddDelivery_Null_Throws_Argument_Null_Exception()
         {
-            dm.Deliveries.Clear();
-
             dm.AddDelivery(null);
         }
 
         [TestMethod]
         public void AddDelivery_SavesToFile()
         {
-            dm.Deliveries.Clear();
-
             Delivery delivery1 = new Delivery("Андрей", "Бармалеева улица", DateTime.Now);
             Delivery delivery2 = new Delivery("Николай", "улица Рубинштейна", DateTime.Now);
 
@@ -71,8 +76,6 @@ namespace DeliveryAppTests
         [TestMethod]
         public void RemoveDelivery_ExistingDelivery_RemovesFromList()
         {
-            dm.Deliveries.Clear();
-
             Delivery delivery1 = new Delivery("Андрей", "Бармалеева улица", DateTime.Now);
             Delivery delivery2 = new Delivery("Николай", "улица Рубинштейна", DateTime.Now);
 
@@ -87,16 +90,12 @@ namespace DeliveryAppTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void RemoveDelivery_NullDelivery_ThrowsArgumentNullException()
         {
-            dm.Deliveries.Clear();
-
             dm.RemoveDelivery(null);
         }
 
         [TestMethod]
         public void RemoveDelivery_NonExistingDelivery_NoChanges()
         {
-            dm.Deliveries.Clear();
-
             Delivery delivery1 = new Delivery("Андрей", "Бармалеева улица", DateTime.Now);
             Delivery delivery2 = new Delivery("Николай", "улица Рубинштейна", DateTime.Now);
             Delivery delivery3 = new Delivery("Борис", "улица Шишкина", DateTime.Now);
@@ -113,8 +112,6 @@ namespace DeliveryAppTests
         [TestMethod]
         public void RemoveDelivery_SavesToFile()
         {
-            dm.Deliveries.Clear();
-
             Delivery delivery1 = new Delivery("Андрей", "Бармалеева улица", DateTime.Now);
             Delivery delivery2 = new Delivery("Николай", "улица Рубинштейна", DateTime.Now);
             Delivery delivery3 = new Delivery("Борис", "улица Шишкина", DateTime.Now);
@@ -130,6 +127,48 @@ namespace DeliveryAppTests
                 Assert.IsTrue(lines.Contains($"Андрей|Бармалеева улица|{DateTime.Now.ToString("yyyy-MM-dd")}|0"));
                 Assert.IsTrue(lines.Contains($"Николай|улица Рубинштейна|{DateTime.Now.ToString("yyyy-MM-dd")}|0"));
                 Assert.IsTrue(!lines.Contains($"Борис|улица Шишкина|{DateTime.Now.ToString("yyyy-MM-dd")}|0"));
+            }
+        }
+
+        [TestMethod]
+        public void UpdateDeliveryStatus_ValidDelivery_UpdatesStatus()
+        {
+            Delivery delivery1 = new Delivery("Андрей", "Бармалеева улица", DateTime.Now);
+
+            dm.AddDelivery(delivery1);
+
+            Delivery target = dm.Deliveries.Find(d => d.CustomerName == "Андрей" && d.Address == "Бармалеева улица");
+
+            dm.UpdateDeliveryStatus(target, DeliveryStatus.В_пути);
+
+            DeliveryStatus expected = DeliveryStatus.В_пути;
+            DeliveryStatus actual = target.Status;
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void UpdateDeliveryStatus_NullDelivery_ThrowsArgumentNullException()
+        {
+            dm.UpdateDeliveryStatus(null, DeliveryStatus.В_пути);
+        }
+
+        [TestMethod]
+        public void UpdateDeliveryStatus_SavesToFile()
+        {
+            Delivery delivery1 = new Delivery("Андрей", "Бармалеева улица", DateTime.Now);
+
+            dm.AddDelivery(delivery1);
+
+            Delivery target = dm.Deliveries.Find(d => d.CustomerName == "Андрей" && d.Address == "Бармалеева улица");
+
+            dm.UpdateDeliveryStatus(target, DeliveryStatus.В_пути);
+
+            if (File.Exists("deliveries.txt"))
+            {
+                var lines = File.ReadLines("deliveries.txt");
+                Assert.IsTrue(lines.Contains($"Андрей|Бармалеева улица|{DateTime.Now.ToString("yyyy-MM-dd")}|1"));
             }
         }
     }
