@@ -210,16 +210,16 @@ namespace DeliveryApp
                 customerName && d.Address == address);
                 if (deliveryToUpdate != null)
                 {
-                    DeliveryStatus newStatus = (DeliveryStatus)Enum.Parse(typeof(DeliveryStatus),
-                    statusComboBox.SelectedItem.ToString());
                     try
                     {
+                        DeliveryStatus newStatus = (DeliveryStatus)Enum.Parse(typeof(DeliveryStatus),
+                        statusComboBox.SelectedItem?.ToString());
                         deliveryManager.UpdateDeliveryStatus(deliveryToUpdate, newStatus);
                         UpdateDeliveriesList();
                     }
-                    catch (Exception ex)
+                    catch
                     {
-                        MessageBox.Show(ex.Message);
+                        MessageBox.Show("Статус достваки не может быть неопределенным!");
                     }
                 }
             }
