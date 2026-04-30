@@ -138,10 +138,15 @@ namespace DeliveryApp
         }
         private void AddDeliveryButton_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(customerNameTextBox.Text) ||
-            string.IsNullOrEmpty(addressTextBox.Text))
+            if (string.IsNullOrEmpty(customerNameTextBox.Text))
             {
-                MessageBox.Show("Заполните все поля!");
+                MessageBox.Show("Введите имя клиента!");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(addressTextBox.Text))
+            {
+                MessageBox.Show("Введите адрес доставки!");
                 return;
             }
             DateTime deliveryDate = deliveryDatePicker.Value;
