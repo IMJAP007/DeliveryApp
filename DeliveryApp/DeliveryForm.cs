@@ -212,8 +212,7 @@ namespace DeliveryApp
                 {
                     try
                     {
-                        DeliveryStatus newStatus = (DeliveryStatus)Enum.Parse(typeof(DeliveryStatus),
-                        statusComboBox.SelectedItem?.ToString());
+                        DeliveryStatus newStatus = (DeliveryStatus)Enum.Parse(typeof(DeliveryStatus), statusComboBox.SelectedItem?.ToString());
                         deliveryManager.UpdateDeliveryStatus(deliveryToUpdate, newStatus);
                         UpdateDeliveriesList();
                     }
