@@ -275,5 +275,54 @@ namespace DeliveryAppTests
             var result = dm.SelectByStatus(DeliveryStatus.Новый);
             Assert.AreEqual(0, result.Count);
         }
+
+        [TestMethod]
+        public void SelectDeliveriesByStatus_Delete_Delivery_Using_Sortlist()
+        {
+            Delivery delivery1 = new Delivery("Андрей", "Бармалеева улица", DateTime.Now);
+            Delivery delivery2 = new Delivery("Николай", "улица Рубинштейна", DateTime.Now);
+            Delivery delivery3 = new Delivery("Борис", "улица Шишкина", DateTime.Now);
+
+            dm.AddDelivery(delivery1);
+            dm.AddDelivery(delivery2);
+            dm.AddDelivery(delivery3);
+
+            dm.UpdateDeliveryStatus(delivery2, DeliveryStatus.В_пути);
+            dm.UpdateDeliveryStatus(delivery3, DeliveryStatus.Доставлен);
+
+            var result = dm.SelectByStatus(DeliveryStatus.В_пути);
+
+            dm.RemoveDelivery(result[0]);
+
+            Assert.IsTrue(!dm.Deliveries.Contains(delivery2));
+        }
+
+        [TestMethod]
+        public void SelectDeliveriesByStatus_Update_Delivery_Using_Sortlist()
+        {
+            Delivery delivery1 = new Delivery("Андрей", "Бармалеева улица", DateTime.Now);
+            Delivery delivery2 = new Delivery("Николай", "улица Рубинштейна", DateTime.Now);
+            Delivery delivery3 = new Delivery("Борис", "улица Шишкина", DateTime.Now);
+
+            dm.AddDelivery(delivery1);
+            dm.AddDelivery(delivery2);
+            dm.AddDelivery(delivery3);
+
+            dm.UpdateDeliveryStatus(delivery2, DeliveryStatus.В_пути);
+            dm.UpdateDeliveryStatus(delivery3, DeliveryStatus.Доставлен);
+
+            var result = dm.SelectByStatus(DeliveryStatus.В_пути);
+
+            dm.UpdateDeliveryStatus(result[0], DeliveryStatus.Доставлен);
+
+            result = dm.SelectByStatus(DeliveryStatus.В_пути);
+
+            Assert.IsTrue(!result.Contains(delivery2));
+            
+            result = dm.SelectByStatus(DeliveryStatus.Доставлен);
+
+            Assert.IsTrue(result.Contains(delivery2));
+            Assert.IsTrue(result.Contains(delivery3));
+        }
     }
 }
