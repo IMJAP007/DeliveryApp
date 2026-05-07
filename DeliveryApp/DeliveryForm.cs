@@ -116,6 +116,13 @@ namespace DeliveryApp
                 Width = 560,
                 Height = 250
             };
+            sortLabel = new Label
+            {
+                Text = "Фильтр по статусу",
+                Location = new System.Drawing.Point(deliveriesListBox.Width - 365, 175),
+                Height = 20,
+                Width = 200
+            };
             sortDeliveriesComboBox = new ComboBox
             {
                 Width = 90,
@@ -157,6 +164,7 @@ namespace DeliveryApp
             this.Controls.Add(sortDeliveriesComboBox);
             this.Controls.Add(sort);
             this.Controls.Add(no_sort);
+            this.Controls.Add(sortLabel);
             deliveryManager = new DeliveryManager();
             UpdateDeliveriesList();
         }

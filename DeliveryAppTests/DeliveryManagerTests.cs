@@ -250,5 +250,30 @@ namespace DeliveryAppTests
             Assert.IsTrue(result.Contains(delivery5));
             Assert.IsTrue(result.Contains(delivery6));
         }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void SelectDeliveriesByStatus_ThrowsException_If_Status_Is_Null()
+        {
+            Delivery delivery1 = new Delivery("Андрей", "Бармалеева улица", DateTime.Now);
+            Delivery delivery2 = new Delivery("Николай", "улица Рубинштейна", DateTime.Now);
+            Delivery delivery3 = new Delivery("Борис", "улица Шишкина", DateTime.Now);
+
+            dm.AddDelivery(delivery1);
+            dm.AddDelivery(delivery2);
+            dm.AddDelivery(delivery3);
+
+            dm.UpdateDeliveryStatus(delivery2, DeliveryStatus.В_пути);
+            dm.UpdateDeliveryStatus(delivery3, DeliveryStatus.Доставлен);
+
+            var result = dm.SelectByStatus(null);
+        }
+
+        [TestMethod]
+        public void SelectDeliveriesByStatus_EmptyList_NoException()
+        {
+            var result = dm.SelectByStatus(DeliveryStatus.Новый);
+            Assert.AreEqual(0, result.Count);
+        }
     }
 }
