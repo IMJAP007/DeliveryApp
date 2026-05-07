@@ -23,6 +23,10 @@ namespace DeliveryApp
         private Button updateStatusButton;
         private Label deliveriesListLabel;
         private ListBox deliveriesListBox;
+        private Label sortLabel;
+        private ComboBox sortDeliveriesComboBox;
+        private Button sort;
+        private Button no_sort;
         public DeliveryForm()
         {
             this.Text = "Управление доставкой";
@@ -108,10 +112,35 @@ namespace DeliveryApp
             };
             deliveriesListBox = new ListBox
             {
-                Location = new System.Drawing.Point(10, 190),
+                Location = new System.Drawing.Point(10, 200),
                 Width = 560,
                 Height = 250
             };
+            sortDeliveriesComboBox = new ComboBox
+            {
+                Width = 90,
+                Height = 10,
+                Location = new System.Drawing.Point(deliveriesListBox.Width-260, 171),
+                Items = {"Новый", "В_пути", "Доставлен"},
+                SelectedIndex = 0,
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
+            sort = new Button
+            {
+                Text = "Выбрать",
+                Width = 70,
+                Height = 23,
+                Location = new System.Drawing.Point(deliveriesListBox.Width - 160, 170)
+            };
+            sort.Click += Sort_Click;
+            no_sort = new Button
+            {
+                Text = "Все доcтавки",
+                Width = 100,
+                Height = 23,
+                Location = new System.Drawing.Point(deliveriesListBox.Width - 90, 170)
+            };
+            no_sort.Click += NoSort_Click;
             this.Controls.Add(customerNameLabel);
             this.Controls.Add(customerNameTextBox);
             this.Controls.Add(addressLabel);
@@ -125,6 +154,9 @@ namespace DeliveryApp
             this.Controls.Add(updateStatusButton);
             this.Controls.Add(deliveriesListLabel);
             this.Controls.Add(deliveriesListBox);
+            this.Controls.Add(sortDeliveriesComboBox);
+            this.Controls.Add(sort);
+            this.Controls.Add(no_sort);
             deliveryManager = new DeliveryManager();
             UpdateDeliveriesList();
         }
@@ -135,6 +167,19 @@ namespace DeliveryApp
             {
                 deliveriesListBox.Items.Add($"{delivery.CustomerName} - {delivery.Address} - {delivery.Status}");
             }
+        }
+        private void Sort_Click(object sender, EventArgs e)
+        {
+            var result = deliveryManager.SelectByStatus((DeliveryStatus)Enum.Parse(typeof(DeliveryStatus), sortDeliveriesComboBox.SelectedItem?.ToString()));
+            deliveriesListBox.Items.Clear();
+            foreach (var delivery in result)
+            {
+                deliveriesListBox.Items.Add($"{delivery.CustomerName} - {delivery.Address} - {delivery.Status}");
+            }
+        }
+        private void NoSort_Click(object sender, EventArgs e)
+        {
+            UpdateDeliveriesList();
         }
         private void AddDeliveryButton_Click(object sender, EventArgs e)
         {

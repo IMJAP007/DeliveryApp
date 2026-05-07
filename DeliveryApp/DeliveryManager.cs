@@ -15,6 +15,27 @@ namespace DeliveryApp
             Deliveries = new List<Delivery>();
             LoadDeliveries();
         }
+
+        public List<Delivery> SelectByStatus(DeliveryStatus? deliveryStatus)
+        {
+            List<Delivery> result = new List<Delivery>();
+
+            if (deliveryStatus == null)
+            {
+                throw new ArgumentNullException("Укажите статус доставки!");
+            }
+
+            foreach (Delivery delivery in Deliveries)
+            {
+                if (delivery.Status == deliveryStatus)
+                {
+                    result.Add(delivery);
+                }
+            }
+
+            return result;
+        }
+
         public void AddDelivery(Delivery delivery)
         {
             if (delivery == null)

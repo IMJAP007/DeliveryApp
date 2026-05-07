@@ -211,5 +211,44 @@ namespace DeliveryAppTests
 
             Assert.AreEqual(1, dm1.Deliveries.Count);
         }
+
+        [TestMethod]
+        public void SelectDeliveriesByStatus_WorksCorrectly()
+        {
+            Delivery delivery1 = new Delivery("Андрей", "Бармалеева улица", DateTime.Now);
+            Delivery delivery2 = new Delivery("Николай", "улица Рубинштейна", DateTime.Now);
+            Delivery delivery3 = new Delivery("Борис", "улица Шишкина", DateTime.Now);
+            Delivery delivery4 = new Delivery("Александр", "Введенская улица", DateTime.Now);
+            Delivery delivery5 = new Delivery("Михаил", "улица Оскаленко", DateTime.Now);
+            Delivery delivery6 = new Delivery("Дмитрий", "улица Композиторов", DateTime.Now);
+
+            dm.AddDelivery(delivery1);
+            dm.AddDelivery(delivery2);
+            dm.AddDelivery(delivery3);
+            dm.AddDelivery(delivery4);
+            dm.AddDelivery(delivery5);
+            dm.AddDelivery(delivery6);
+
+            dm.UpdateDeliveryStatus(delivery3, DeliveryStatus.В_пути);
+            dm.UpdateDeliveryStatus(delivery4, DeliveryStatus.В_пути);
+            dm.UpdateDeliveryStatus(delivery5, DeliveryStatus.Доставлен);
+            dm.UpdateDeliveryStatus(delivery6, DeliveryStatus.Доставлен);
+
+            var result = dm.SelectByStatus(DeliveryStatus.Новый);
+
+            Assert.AreEqual(2, result.Count);
+            Assert.IsTrue(result.Contains(delivery1));
+            Assert.IsTrue(result.Contains(delivery2));
+
+            result = dm.SelectByStatus(DeliveryStatus.В_пути);
+            Assert.AreEqual(2, result.Count);
+            Assert.IsTrue(result.Contains(delivery3));
+            Assert.IsTrue(result.Contains(delivery4));
+
+            result = dm.SelectByStatus(DeliveryStatus.Доставлен);
+            Assert.AreEqual(2, result.Count);
+            Assert.IsTrue(result.Contains(delivery5));
+            Assert.IsTrue(result.Contains(delivery6));
+        }
     }
 }
